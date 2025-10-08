@@ -16,10 +16,19 @@ export default function Amore() {
     >
       <style>
         {`
+          /* --- Responsività generale --- */
           @media (max-width: 768px) {
+            .amore-card {
+              width: 100% !important;
+              borderRadius: 0 !important;
+              boxShadow: none !important;
+              border: none !important;
+              margin: 0 !important;
+            }
             h1 {
-              font-size: 1.6rem !important;
+              font-size: 1.7rem !important;
               line-height: 1.3 !important;
+              margin-top: 0.5rem !important;
             }
             p {
               font-size: 1rem !important;
@@ -41,6 +50,7 @@ export default function Amore() {
             }
           }
 
+          /* --- Schermi piccoli (smartphone compatti) --- */
           @media (max-width: 480px) {
             h1 {
               font-size: 1.4rem !important;
@@ -54,14 +64,16 @@ export default function Amore() {
 
       {/* Card centrale */}
       <div
+        className="amore-card"
         style={{
           borderRadius: "25px",
           overflow: "hidden",
           boxShadow: "0 12px 35px rgba(0,0,0,0.35)",
-          width: "100%",
-          maxWidth: "800px",
+          width: "95%",
+          maxWidth: "900px",
           textAlign: "center",
           backgroundColor: "white",
+          transition: "all 0.3s ease",
           boxSizing: "border-box",
         }}
       >
@@ -79,7 +91,7 @@ export default function Amore() {
         {/* Contenuto della card */}
         <div
           style={{
-            padding: "1.5rem",
+            padding: "1.8rem",
             maxHeight: "600px",
             overflowY: "auto",
           }}
