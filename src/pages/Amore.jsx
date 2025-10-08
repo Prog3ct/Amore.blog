@@ -9,7 +9,7 @@ export default function Amore() {
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#f0f0f0",
-        padding: "1rem",
+        padding: "1rem 0.5rem", // 🔹 aggiunto per margine ai lati su mobile
         width: "100%",
         boxSizing: "border-box",
       }}
@@ -19,11 +19,18 @@ export default function Amore() {
           /* --- Layout mobile migliorato --- */
           @media (max-width: 768px) {
             .amore-card {
-              width: 95% !important;
-              margin: 1rem auto !important;
+              width: 100% !important; /* 🔹 ora occupa tutta la larghezza */
+              min-width: 320px !important; /* 🔹 evita che si stringa troppo */
+              margin: 0 auto !important;
               border-radius: 20px !important;
               box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2) !important;
               border: none !important;
+              padding: 0 !important;
+            }
+
+            /* margine interno del contenuto */
+            .amore-card > div {
+              padding: 1.2rem !important;
             }
 
             h1 {
@@ -33,15 +40,9 @@ export default function Amore() {
             }
 
             p {
-              font-size: 1rem !important;
+              font-size: 1.05rem !important;
               line-height: 1.6 !important;
               text-align: left !important;
-              padding: 0 0.5rem !important;
-            }
-
-            img {
-              max-height: 220px !important;
-              object-fit: cover !important;
             }
 
             ul {
@@ -53,8 +54,14 @@ export default function Amore() {
               padding: 0.8rem 1.6rem !important;
             }
 
+            img {
+              width: 100% !important;
+              max-height: 260px !important;
+              object-fit: cover !important;
+            }
+
             div::-webkit-scrollbar {
-              width: 0;
+              width: 0; /* Nasconde scrollbar su mobile */
             }
           }
 
