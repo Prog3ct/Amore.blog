@@ -16,41 +16,49 @@ export default function Amore() {
     >
       <style>
         {`
-          /* --- Responsività generale --- */
+          /* --- Layout mobile migliorato --- */
           @media (max-width: 768px) {
             .amore-card {
-              width: 100% !important;
-              borderRadius: 0 !important;
-              boxShadow: none !important;
+              width: 95% !important;
+              margin: 1rem auto !important;
+              border-radius: 20px !important;
+              box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2) !important;
               border: none !important;
-              margin: 0 !important;
             }
+
             h1 {
-              font-size: 1.7rem !important;
+              font-size: 1.6rem !important;
+              margin-top: 1rem !important;
               line-height: 1.3 !important;
-              margin-top: 0.5rem !important;
             }
+
             p {
               font-size: 1rem !important;
-              line-height: 1.5 !important;
+              line-height: 1.6 !important;
+              text-align: left !important;
+              padding: 0 0.5rem !important;
             }
+
+            img {
+              max-height: 220px !important;
+              object-fit: cover !important;
+            }
+
             ul {
               margin-left: 1rem !important;
             }
+
             a {
               font-size: 1rem !important;
               padding: 0.8rem 1.6rem !important;
             }
-            img {
-              max-height: 200px !important;
-              object-fit: cover !important;
-            }
+
             div::-webkit-scrollbar {
-              width: 0; /* Nasconde scrollbar su mobile */
+              width: 0;
             }
           }
 
-          /* --- Schermi piccoli (smartphone compatti) --- */
+          /* --- Smartphone molto piccoli --- */
           @media (max-width: 480px) {
             h1 {
               font-size: 1.4rem !important;
@@ -88,7 +96,7 @@ export default function Amore() {
           }}
         />
 
-        {/* Contenuto della card */}
+        {/* Contenuto */}
         <div
           style={{
             padding: "1.8rem",
@@ -187,7 +195,7 @@ export default function Amore() {
               borderRadius: "30px",
               textDecoration: "none",
               boxShadow: "0 5px 12px rgba(0,0,0,0.25)",
-              transition: "background-color 0.3s",
+              transition: "background-color 0.3s, transform 0.2s",
               display: "inline-block",
               fontWeight: "600",
             }}
