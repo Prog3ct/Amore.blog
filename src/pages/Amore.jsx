@@ -9,19 +9,60 @@ export default function Amore() {
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#f0f0f0",
-        padding: "2rem",
+        padding: "1rem",
+        width: "100%",
+        boxSizing: "border-box",
       }}
     >
+      <style>
+        {`
+          @media (max-width: 768px) {
+            h1 {
+              font-size: 1.6rem !important;
+              line-height: 1.3 !important;
+            }
+            p {
+              font-size: 1rem !important;
+              line-height: 1.5 !important;
+            }
+            ul {
+              margin-left: 1rem !important;
+            }
+            a {
+              font-size: 1rem !important;
+              padding: 0.8rem 1.6rem !important;
+            }
+            img {
+              max-height: 200px !important;
+              object-fit: cover !important;
+            }
+            div::-webkit-scrollbar {
+              width: 0; /* Nasconde scrollbar su mobile */
+            }
+          }
+
+          @media (max-width: 480px) {
+            h1 {
+              font-size: 1.4rem !important;
+            }
+            p {
+              font-size: 0.95rem !important;
+            }
+          }
+        `}
+      </style>
+
       {/* Card centrale */}
       <div
         style={{
           borderRadius: "25px",
           overflow: "hidden",
           boxShadow: "0 12px 35px rgba(0,0,0,0.35)",
-          width: "95%",
-          maxWidth: "1000px",
+          width: "100%",
+          maxWidth: "800px",
           textAlign: "center",
           backgroundColor: "white",
+          boxSizing: "border-box",
         }}
       >
         {/* Immagine Amore */}
@@ -38,30 +79,32 @@ export default function Amore() {
         {/* Contenuto della card */}
         <div
           style={{
-            padding: "2.5rem",
+            padding: "1.5rem",
             maxHeight: "600px",
             overflowY: "auto",
           }}
         >
           <h1
             style={{
-              fontSize: "3rem",
+              fontSize: "2rem",
               fontWeight: "bold",
               marginBottom: "1rem",
+              color: "#ff4d94",
+              lineHeight: "1.2",
             }}
           >
             ❤️ Benvenuti su Chat Amore ❤️
           </h1>
 
-          {/* --- NUOVO PARAGRAFO INSERITO QUI --- */}
           <p
             style={{
-              fontSize: "1.3rem",
+              fontSize: "1.1rem",
               marginBottom: "2rem",
               lineHeight: "1.6",
               textAlign: "justify",
               color: "#444",
               fontStyle: "italic",
+              wordBreak: "break-word",
             }}
           >
             Benvenuti nel nostro angolo di serenità! ❤️ <br />
@@ -75,14 +118,15 @@ export default function Amore() {
             con noi un’esperienza autentica, fatta di condivisione, calore e
             piccoli momenti che sanno di casa.
           </p>
-          {/* --- FINE NUOVO PARAGRAFO --- */}
 
           <p
             style={{
-              fontSize: "1.3rem",
+              fontSize: "1.1rem",
               marginBottom: "1.5rem",
               lineHeight: "1.6",
               textAlign: "justify",
+              color: "#333",
+              wordBreak: "break-word",
             }}
           >
             Se stai cercando un posto dove fare nuove conoscenze, chiacchierare
@@ -95,7 +139,7 @@ export default function Amore() {
             <br />
             <br />
             <strong>Perché entrare in Chat Amore?</strong>
-            <ul style={{ textAlign: "left", marginLeft: "2rem" }}>
+            <ul style={{ textAlign: "left", marginLeft: "1.5rem" }}>
               <li>Conoscere nuove persone da tutta Italia</li>
               <li>❤️ Fare amicizia o trovare l’amore in un ambiente accogliente</li>
               <li>Chiacchierare liberamente di musica, passioni e vita quotidiana</li>
@@ -108,8 +152,8 @@ export default function Amore() {
             <strong>Come partecipare</strong>
             <br />
             Accedere è facilissimo: ti basta entrare nella nostra webchat
-            utilizzando il tasto che si trova in basso. Non servono complicate
-            iscrizioni: in pochi secondi sarai parte della community!
+            utilizzando il tasto qui sotto. Non servono complicate iscrizioni:
+            in pochi secondi sarai parte della community!
             <br />
             <br />
             ✨ Non perdere l’occasione di incontrare persone simpatiche,
@@ -124,8 +168,8 @@ export default function Amore() {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              padding: "1rem 3rem",
-              fontSize: "1.2rem",
+              padding: "1rem 2rem",
+              fontSize: "1.1rem",
               backgroundColor: "#ff4d94",
               color: "#fff",
               borderRadius: "30px",
@@ -134,7 +178,6 @@ export default function Amore() {
               transition: "background-color 0.3s",
               display: "inline-block",
               fontWeight: "600",
-              marginTop: "1.5rem",
             }}
             onMouseEnter={(e) => (e.target.style.backgroundColor = "#ff3385")}
             onMouseLeave={(e) => (e.target.style.backgroundColor = "#ff4d94")}
