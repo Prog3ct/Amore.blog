@@ -19,10 +19,8 @@ const forbiddenWords = [
   "puttane","brutta vacca"
 ];
 
-// --- Parole chiave porno ---
 const pornKeywords = ["porn","xxx","adult","sex","pene","vagina","sesso","tette","porno"];
 
-// --- Normalizzazione nickname ---
 function normalizeNick(nick) {
   return nick
     .toLowerCase()
@@ -36,7 +34,6 @@ function normalizeNick(nick) {
     .replace(/\$/g,"s");
 }
 
-// --- Controllo nickname proibiti ---
 function containsForbiddenWord(nick) {
   const normalized = normalizeNick(nick);
   return forbiddenWords.some(word => {
@@ -46,7 +43,6 @@ function containsForbiddenWord(nick) {
   });
 }
 
-// --- Verifica nickname già registrati / simili ---
 function levenshteinDistance(a,b){
   const matrix = Array.from({length:a.length+1},()=>Array(b.length+1).fill(0));
   for(let i=0;i<=a.length;i++) matrix[i][0]=i;
@@ -70,7 +66,6 @@ function isNicknameAllowed(nick, registeredNicks){
   return true;
 }
 
-// --- Funzioni YouTube ---
 function extractVideoId(url){
   const regex=/(?:https?:\/\/(?:www\.)?youtube.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu.be\/)([a-zA-Z0-9_-]{11})/;
   const match = url.match(regex);
@@ -78,7 +73,7 @@ function extractVideoId(url){
 }
 
 async function fetchVideoData(videoId){
-  const API_KEY="AIzaSyAJrVSyR6xOU1quVCXWAYzq3_DTkFMilhw"; 
+  const API_KEY="AIzaSyAJrVSyR6xOU1quVCXWAYzq3_DTkFMilhw";
   try{
     const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${API_KEY}&part=snippet,contentDetails`);
     const data = await res.json();
@@ -109,7 +104,6 @@ function formatDuration(iso){
   return hours>0?`${hStr}${mStr}:${sStr}`:`${mStr}:${sStr}`;
 }
 
-// --- Censura dei messaggi ---
 function censorText(text){
   let censored = text;
   const makeRegex = (word) => {
@@ -120,7 +114,6 @@ function censorText(text){
   return censored;
 }
 
-// --- Componente principale ---
 export default function Chat(){
   const [messages,setMessages]=useState([]);
   const [nickname,setNickname]=useState("");
@@ -196,18 +189,62 @@ export default function Chat(){
     setNickWarning("");
   }
 
-  // --- STILI RESPONSIVE ---
+  // --- FIX RESPONSIVE MOBILE ---
   const responsiveStyle = `
     @media (max-width: 768px) {
-      h1, h2 { font-size: 1.5rem !important; }
-      input, button { font-size: 1rem !important; width: 100% !important; margin-bottom: 0.7rem !important; }
-      div[style*="maxWidth:900px"] { width: 100% !important; max-width: 100% !important; }
-      img[alt="Thumbnail"] { width: 100% !important; height: auto !important; margin-bottom: 8px !important; }
-      div[style*="display:flex"][style*="alignItems:center"] { flex-direction: column !important; align-items: flex-start !important; }
-      div[style*="padding:2rem"] { padding: 1rem !important; }
+      h1, h2 {
+        font-size: 1.4rem !important;
+        text-align: center !important;
+      }
+
+      input, button {
+        font-size: 1rem !important;
+        width: 100% !important;
+        margin-bottom: 0.7rem !important;
+      }
+
+      div[style*="maxWidth:900px"],
+      div[style*="border:1px solid #ccc"],
+      div[style*="maxHeight:70vh"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 0.6rem !important;
+        margin: 0 auto !important;
+        overflow-x: hidden !important;
+      }
+
+      img[alt="Thumbnail"] {
+        width: 100% !important;
+        height: auto !important;
+        margin-bottom: 8px !important;
+        border-radius: 10px !important;
+      }
+
+      div[style*="display:flex"][style*="alignItems:center"] {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        width: 100% !important;
+      }
+
+      div[style*="padding:2rem"] {
+        padding: 1rem !important;
+      }
+
+      div[style*="maxHeight:70vh"] {
+        max-height: 60vh !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+
+      button {
+        display: block !important;
+        margin: 0.5rem auto !important;
+      }
     }
   `;
 
+  // --- Schermate e chat ---
   if(!mode) return (
     <>
       <style>{responsiveStyle}</style>
@@ -295,7 +332,6 @@ export default function Chat(){
     );
   }
 
-  // --- Chat attiva ---
   return (
     <>
       <style>{responsiveStyle}</style>
