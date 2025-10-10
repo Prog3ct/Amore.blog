@@ -11,12 +11,10 @@ const forbiddenWords = [
   "merdina","stronzetto","puttanella","cazzetto","cazzone","frociotto",
   "cornutello","vaffanculino","scemino","zoccoletta","mignottina",
   "fuck","shit","bitch","asshole","dumb","stupid","idiot","faggot",
-  "bastard","slut","cunt",
-  "fck","sh1t","b1tch","a$$hole","p-uttana","p_uttana","_puttana_","c-azzo",
+  "bastard","slut","cunt","fck","sh1t","b1tch","a$$hole",
   "coglione","coglioni","coglionazzo","coglioncello",
   "andicappato","handicap","handicappato","handicapped","disabile",
-  "pedofilo","pedofilia","pedofili","pedofilo/a",
-  "puttane","brutta vacca"
+  "pedofilo","pedofilia","pedofili","pedofilo/a","puttane","brutta vacca"
 ];
 
 // --- Parole chiave porno ---
@@ -36,7 +34,6 @@ function normalizeNick(nick) {
     .replace(/\$/g,"s");
 }
 
-// --- Controllo nickname proibiti ---
 function containsForbiddenWord(nick) {
   const normalized = normalizeNick(nick);
   return forbiddenWords.some(word => {
@@ -46,7 +43,6 @@ function containsForbiddenWord(nick) {
   });
 }
 
-// --- Verifica nickname già registrati / simili ---
 function levenshteinDistance(a,b){
   const matrix = Array.from({length:a.length+1},()=>Array(b.length+1).fill(0));
   for(let i=0;i<=a.length;i++) matrix[i][0]=i;
@@ -120,7 +116,6 @@ function censorText(text){
   return censored;
 }
 
-// --- Componente principale ---
 export default function Chat(){
   const [messages,setMessages]=useState([]);
   const [nickname,setNickname]=useState("");
@@ -196,15 +191,16 @@ export default function Chat(){
     setNickWarning("");
   }
 
-  // --- STILI RESPONSIVE ---
+  // --- STILI RESPONSIVE MIGLIORATI ---
   const responsiveStyle = `
     @media (max-width: 768px) {
-      h1, h2 { font-size: 1.5rem !important; }
-      input, button { font-size: 1rem !important; width: 100% !important; margin-bottom: 0.7rem !important; }
+      h1, h2 { font-size: 1.4rem !important; text-align: center !important; }
+      input, button { width: 100% !important; font-size: 1rem !important; margin-bottom: 0.8rem !important; }
       div[style*="maxWidth:900px"] { width: 100% !important; max-width: 100% !important; }
-      img[alt="Thumbnail"] { width: 100% !important; height: auto !important; margin-bottom: 8px !important; }
-      div[style*="display:flex"][style*="alignItems:center"] { flex-direction: column !important; align-items: flex-start !important; }
+      div[style*="display:flex"][style*="alignItems:center"] { flex-direction: column !important; align-items: stretch !important; gap: 0.6rem !important; }
       div[style*="padding:2rem"] { padding: 1rem !important; }
+      img[alt="Thumbnail"] { width: 100% !important; height: auto !important; border-radius: 10px !important; }
+      div[style*="maxHeight:70vh"] { max-height: 60vh !important; }
     }
   `;
 
@@ -302,21 +298,21 @@ export default function Chat(){
       <div style={{padding:"2rem",minHeight:"100vh",backgroundColor:"#f0f0f0",display:"flex",flexDirection:"column",alignItems:"center"}}>
         <h2 style={{marginBottom:"1rem"}}>Chat attiva - Nick: {nickname}</h2>
 
-        <div style={{marginBottom:"1rem",width:"90%",maxWidth:"900px"}}>
+        <div style={{marginBottom:"1rem",width:"90%",maxWidth:"900px",display:"flex",alignItems:"center",gap:"0.5rem"}}>
           <input
             placeholder="Scrivi un messaggio o incolla un link YouTube"
             value={input}
             onChange={e=>setInput(e.target.value)}
             onKeyDown={e=>e.key==="Enter"&&sendMessage()}
-            style={{width:"70%",padding:"0.8rem",borderRadius:"8px",border:"1px solid #ccc",fontSize:"1rem",marginRight:"0.5rem"}}
+            style={{flex:1,padding:"0.8rem",borderRadius:"8px",border:"1px solid #ccc",fontSize:"1rem"}}
           />
-          <button onClick={()=>setShowPicker(!showPicker)} style={{padding:"0.8rem",fontSize:"1rem",marginRight:"0.5rem"}}>😀</button>
+          <button onClick={()=>setShowPicker(!showPicker)} style={{padding:"0.8rem",fontSize:"1rem"}}>😀</button>
           <button onClick={sendMessage} style={{padding:"0.8rem 1.2rem",fontSize:"1rem",backgroundColor:"#ff4d94",color:"#fff",border:"none",borderRadius:"8px",cursor:"pointer"}}>Invia</button>
         </div>
 
         {showPicker && <EmojiPicker onEmojiClick={addEmoji}/>}
 
-        <div style={{border:"1px solid #ccc",padding:"0.5rem",maxHeight:"70vh",overflowY:"auto",fontSize:"1rem",width:"90%",maxWidth:"900px"}}>
+        <div style={{border:"1px solid #ccc",padding:"0.5rem",maxHeight:"70vh",overflowY:"auto",fontSize:"1rem",width:"90%",maxWidth:"900px",backgroundColor:"#fff",borderRadius:"10px"}}>
           {messages.map((msg,idx)=>(  
             <div key={idx} style={{padding:"0px 0",margin:"0 0 12px 0"}}>
               <div style={{lineHeight:"1.3",wordBreak:"break-word",margin:0,padding:0}}>
