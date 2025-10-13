@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "../supabaseClient";
 import EmojiPicker from "emoji-picker-react";
 
@@ -130,6 +130,7 @@ export default function Chat(){
   const [mode,setMode]=useState(null);
   const [registeredUsers,setRegisteredUsers]=useState([]);
   const [nickWarning, setNickWarning] = useState("");
+  const messageBoxRef = useRef(null);
 
   useEffect(()=>{
     async function fetchData(){
@@ -144,13 +145,22 @@ export default function Chat(){
   },[]);
 
   useEffect(()=>{
-    const channel=supabase.channel("public:messages").on(
+    const channel = supabase.channel("public:messages").on(
       "postgres_changes",
       {event:"INSERT",schema:"public",table:"messages"},
-      payload=>setMessages(prev=>[...prev,payload.new])
+      payload => setMessages(prev => [...prev, payload.new])
     ).subscribe();
-    return ()=>supabase.removeChannel(channel);
+    return () => supabase.removeChannel(channel);
   },[]);
+
+  // Scroll automatico in alto
+  useEffect(()=>{
+    const el = messageBoxRef.current;
+    if (!el) return;
+    requestAnimationFrame(() => {
+      el.scrollTop = 0;
+    });
+  }, [messages]);
 
   async function sendMessage(){
     const trimmedNick=nickname.trim();
@@ -196,7 +206,7 @@ export default function Chat(){
     setNickWarning("");
   }
 
-  // --- STILI RESPONSIVE ---
+  // --- Stili responsive ---
   const responsiveStyle = `
     @media (max-width: 768px) {
       h1, h2 { font-size: 1.5rem !important; }
@@ -316,8 +326,20 @@ export default function Chat(){
 
         {showPicker && <EmojiPicker onEmojiClick={addEmoji}/>}
 
-        <div style={{border:"1px solid #ccc",padding:"0.5rem",maxHeight:"70vh",overflowY:"auto",fontSize:"1rem",width:"90%",maxWidth:"900px"}}>
-          {messages.map((msg,idx)=>(  
+        <div
+          ref={messageBoxRef}
+          style={{
+            border:"1px solid #ccc",
+            padding:"0.5rem",
+            maxHeight:"70vh",
+            overflowY:"auto",
+            fontSize:"1rem",
+            width:"90%",
+            maxWidth:"900px",
+            display:"block"
+          }}
+        >
+          {([...messages].slice().reverse()).map((msg, idx) => (
             <div key={idx} style={{padding:"0px 0",margin:"0 0 12px 0"}}>
               <div style={{lineHeight:"1.3",wordBreak:"break-word",margin:0,padding:0}}>
                 <strong>{msg.nickname}: </strong>
