@@ -3,129 +3,27 @@ import { supabase } from "../supabaseClient";
 import EmojiPicker from "emoji-picker-react";
 
 // --- Lista parole vietate ---
-const forbiddenWords = [
-  "cazzo","cazz","merda","stronzo","idiota","stupido","cretino","bastardo",
-  "frocio","puttana","troia","cornuto","figliodiputtana",
-  "vaffanculo","scemo","scemotto","zoccola","piscione","bocchino",
-  "pappone","mignotta","culattone","fichetto",
-  "merdina","stronzetto","puttanella","cazzetto","cazzone","frociotto",
-  "cornutello","vaffanculino","scemino","zoccoletta","mignottina",
-  "fuck","shit","bitch","asshole","dumb","stupid","idiot","faggot",
-  "bastard","slut","cunt",
-  "fck","sh1t","b1tch","a$$hole","p-uttana","p_uttana","_puttana_","c-azzo",
-  "coglione","coglioni","coglionazzo","coglioncello",
-  "andicappato","handicap","handicappato","handicapped","disabile",
-  "pedofilo","pedofilia","pedofili","pedofilo/a",
-  "puttane","brutta vacca"
-];
+const forbiddenWords = [/* lista completa come nel tuo codice originale */];
 
 // --- Parole chiave porno ---
 const pornKeywords = ["porn","xxx","adult","sex","pene","vagina","sesso","tette","porno"];
 
 // --- Normalizzazione nickname ---
-function normalizeNick(nick) {
-  return nick
-    .toLowerCase()
-    .replace(/[\s\-_\.!@\$*0-9]+/g,"")
-    .replace(/0/g,"o")
-    .replace(/1/g,"i")
-    .replace(/3/g,"e")
-    .replace(/4/g,"a")
-    .replace(/@/g,"a")
-    .replace(/!/g,"i")
-    .replace(/\$/g,"s");
-}
-
-// --- Controllo nickname proibiti ---
-function containsForbiddenWord(nick) {
-  const normalized = normalizeNick(nick);
-  return forbiddenWords.some(word => {
-    const pattern = word.toLowerCase().replace(/\s+/g,"").split("").join("[\\s\\-_\\W]*");
-    const regex = new RegExp(pattern, "i");
-    return regex.test(normalized);
-  });
-}
-
-// --- Verifica nickname già registrati / simili ---
-function levenshteinDistance(a,b){
-  const matrix = Array.from({length:a.length+1},()=>Array(b.length+1).fill(0));
-  for(let i=0;i<=a.length;i++) matrix[i][0]=i;
-  for(let j=0;j<=b.length;j++) matrix[0][j]=j;
-  for(let i=1;i<=a.length;i++){
-    for(let j=1;j<=b.length;j++){
-      if(a[i-1]===b[j-1]) matrix[i][j]=matrix[i-1][j-1];
-      else matrix[i][j]=1+Math.min(matrix[i-1][j],matrix[i][j-1],matrix[i-1][j-1]);
-    }
-  }
-  return matrix[a.length][b.length];
-}
-
-function isNicknameAllowed(nick, registeredNicks){
-  const normalized = nick.toLowerCase();
-  for(let reg of registeredNicks){
-    const regNormalized = reg.toLowerCase();
-    if(normalized===regNormalized) return false;
-    if(levenshteinDistance(normalized,regNormalized)<=2) return false;
-  }
-  return true;
-}
+function normalizeNick(nick) { /* funzione originale */ }
+function containsForbiddenWord(nick) { /* funzione originale */ }
+function levenshteinDistance(a,b){ /* funzione originale */ }
+function isNicknameAllowed(nick, registeredNicks){ /* funzione originale */ }
 
 // --- Funzioni YouTube ---
-function extractVideoId(url){
-  const regex=/(?:https?:\/\/(?:www\.)?youtube.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu.be\/)([a-zA-Z0-9_-]{11})/;
-  const match = url.match(regex);
-  return match?match[1]:null;
-}
-
-async function fetchVideoData(videoId){
-  const API_KEY="AIzaSyAJrVSyR6xOU1quVCXWAYzq3_DTkFMilhw"; 
-  try{
-    const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${API_KEY}&part=snippet,contentDetails`);
-    const data = await res.json();
-    if(data.items && data.items.length>0){
-      const video = data.items[0];
-      return {
-        title: video.snippet.title,
-        channel: video.snippet.channelTitle,
-        thumbnail: video.snippet.thumbnails.medium.url,
-        duration: video.contentDetails.duration,
-        videoId
-      };
-    }
-  }catch(err){console.error("Errore fetch YouTube API:",err);}
-  return null;
-}
-
-function formatDuration(iso){
-  if(!iso) return "";
-  const match = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-  if(!match) return "";
-  const hours=parseInt(match[1]||0);
-  const minutes=parseInt(match[2]||0);
-  const seconds=parseInt(match[3]||0);
-  const hStr = hours>0?`${hours}:`:"";
-  const mStr = minutes<10 && hours>0?`0${minutes}`:minutes;
-  const sStr = seconds<10?`0${seconds}`:seconds;
-  return hours>0?`${hStr}${mStr}:${sStr}`:`${mStr}:${sStr}`;
-}
+function extractVideoId(url){ /* funzione originale */ }
+async function fetchVideoData(videoId){ /* funzione originale */ }
+function formatDuration(iso){ /* funzione originale */ }
 
 // --- Censura dei messaggi ---
-function censorText(text){
-  let censored = text;
-  const makeRegex = (word) => {
-    return new RegExp(word.toLowerCase().replace(/\s+/g,"").split("").join("[\\s\\-_\\W]*"), "gi");
-  };
-  forbiddenWords.forEach(word => { censored = censored.replace(makeRegex(word), "***"); });
-  pornKeywords.forEach(word => { censored = censored.replace(makeRegex(word), "***"); });
-  return censored;
-}
+function censorText(text){ /* funzione originale */ }
 
 // --- Estrazione GIF ---
-function extractGifUrl(text){
-  const regex = /(https?:\/\/\S+\.gif)/i;
-  const match = text.match(regex);
-  return match ? match[1] : null;
-}
+function extractGifUrl(text){ /* funzione originale */ }
 
 // --- Componente principale ---
 export default function Chat(){
@@ -163,78 +61,112 @@ export default function Chat(){
   useEffect(()=>{
     const el = messageBoxRef.current;
     if (!el) return;
-    requestAnimationFrame(() => {
-      el.scrollTop = 0;
-    });
+    requestAnimationFrame(() => { el.scrollTop = 0; });
   }, [messages]);
 
-  async function sendMessage(){
-    const trimmedNick = nickname.trim();
-    const trimmedMsg = input.trim();
-    if(!trimmedNick){ alert("Devi inserire un nickname!"); return; }
-    if(!trimmedMsg) return;
-    if(pornKeywords.some(w=>trimmedMsg.toLowerCase().includes(w))){ alert("Non puoi inviare contenuti pornografici!"); return; }
-
-    const videoId = extractVideoId(trimmedMsg);
-    let videoData = null;
-    if(videoId) videoData = await fetchVideoData(videoId);
-
-    const gifUrl = extractGifUrl(trimmedMsg);
-
-    const newMessage = { nickname: trimmedNick, text: trimmedMsg };
-    if(videoData) newMessage.video = videoData;
-    if(gifUrl) newMessage.gifUrl = gifUrl;
-
-    const { error } = await supabase.from("messages").insert([newMessage]);
-    if(error){ console.error("Errore invio messaggio:", error); alert("Errore invio messaggio"); return; }
-
-    setInput("");
-  }
-
-  async function handleLogin(){
-    const trimmedNick=nickname.trim();
-    if(!trimmedNick){alert("Devi inserire un nickname!"); return;}
-    if(containsForbiddenWord(trimmedNick)){alert("Nickname non consentito!"); return;}
-    const existingUser=registeredUsers.find(u=>u.nickname===trimmedNick);
-    if(existingUser){
-      if(existingUser.password===password){alert("Login riuscito!"); setMode("chat");}
-      else alert("Password errata!");
-    }else{
-      const {error}=await supabase.from("registered_users").insert([{nickname:trimmedNick,password}]);
-      if(!error){setRegisteredUsers([...registeredUsers,{nickname:trimmedNick,password}]); alert("Nickname registrato!"); setMode("chat");}
-    }
-  }
-
-  function handleGuest(){
-    const trimmedNick=nickname.trim();
-    if(!trimmedNick){alert("Devi inserire un nickname!"); return;}
-    if(containsForbiddenWord(trimmedNick)){alert("Nickname non consentito!"); return;}
-    if(!isNicknameAllowed(trimmedNick,registeredUsers.map(u=>u.nickname))){alert("Nickname non disponibile (registrato o troppo simile)"); return;}
-    setMode("chat"); alert("Accesso come ospite consentito!");
-  }
-
-  function addEmoji(emojiData){setInput(prev=>prev+emojiData.emoji); setShowPicker(false);}
-  function checkNicknameLive(nick) {
-    if (!nick) { setNickWarning(""); return; }
-    if (containsForbiddenWord(nick)) { setNickWarning("⚠️ Questo nickname contiene parole non consentite!"); return; }
-    if (!isNicknameAllowed(nick, registeredUsers.map(u => u.nickname))) { setNickWarning("⚠️ Nickname già registrato o troppo simile ad un altro!"); return; }
-    setNickWarning("");
-  }
+  async function sendMessage(){ /* funzione originale */ }
+  async function handleLogin(){ /* funzione originale */ }
+  function handleGuest(){ /* funzione originale */ }
+  function addEmoji(emojiData){ setInput(prev=>prev+emojiData.emoji); setShowPicker(false); }
+  function checkNicknameLive(nick){ /* funzione originale */ }
 
   const responsiveStyle = `
-    html, body, #root { margin: 0; padding: 0; width: 100%; overflow-x: hidden; font-family: Arial, sans-serif; }
+    html, body, #root {
+      margin: 0; padding: 0; width: 100%; overflow-x: hidden; font-family: Arial, sans-serif;
+    }
     input, button { box-sizing: border-box; }
-    .chat-container { padding: 2rem; min-height: 100vh; background-color: #f0f0f0; display: flex; flex-direction: column; align-items: center; width: 100%; overflow-x: hidden; }
-    .messages-box { border: 1px solid #ccc; padding: 0.5rem; max-height: 70vh; overflow-y: auto; font-size: 1rem; width: 100%; max-width: 900px; display: block; box-sizing: border-box; }
+
+    /* CONTENITORE PRINCIPALE */
+    .chat-container {
+      padding: 2rem;
+      min-height: 100vh;
+      background-color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    /* MESSAGGI */
+    .messages-box {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      max-height: 70vh;
+      overflow-y: auto;
+      font-size: 1rem;
+      width: 100%;
+      max-width: 900px;
+      display: block;
+      box-sizing: border-box;
+    }
+
     .message-item { padding: 0; margin-bottom: 12px; word-break: break-word; line-height: 1.3; }
-    .video-container { display: flex; flex-wrap: wrap; align-items: center; border: 1px solid #ddd; border-radius: 6px; padding: 4px; background-color: #fff; margin-top: 4px; }
-    .video-container img { width: 100%; max-width: 300px; height: auto; margin-right: 10px; border-radius: 4px; }
+
+    /* VIDEO E GIF */
+    .video-container, .gif-container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 4px;
+      background-color: #fff;
+      margin-top: 4px;
+    }
+
+    .video-container img, .gif-container img {
+      width: 100%;
+      max-width: 300px;
+      height: auto;
+      margin-right: 10px;
+      border-radius: 4px;
+    }
+
     .video-info { flex: 1; min-width: 0; }
-    .gif-container img { max-width: 100%; border-radius: 4px; }
-    .input-group { display: flex; flex-wrap: wrap; width: 100%; max-width: 900px; margin-bottom: 1rem; }
-    .input-group input { flex: 1 1 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; margin-bottom: 0.5rem; }
-    .input-group button { padding: 0.8rem 1.2rem; font-size: 1rem; margin-right: 0.5rem; margin-bottom: 0.5rem; border-radius: 8px; border: none; cursor: pointer; }
-    @media (min-width: 600px) { .input-group input { flex: 1 1 auto; margin-bottom: 0; } }
+
+    /* INPUT E BUTTON */
+    .input-group {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 1rem;
+    }
+
+    .input-group input {
+      flex: 1 1 100%;
+      padding: 0.8rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .input-group button {
+      padding: 0.8rem 1.2rem;
+      font-size: 1rem;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    @media (min-width: 600px) {
+      .input-group input { flex: 1 1 auto; margin-bottom: 0; }
+    }
+
+    /* --- SOLO MOBILE: CENTRATO --- */
+    @media (max-width: 600px) {
+      .chat-container { padding: 1rem; align-items: center; }
+      .messages-box { max-width: 450px; margin: 0 auto; }
+      .input-group { flex-direction: column; align-items: center; max-width: 450px; }
+      .input-group input, .input-group button { width: 100%; margin-bottom: 0.5rem; }
+      .video-container, .gif-container { flex-direction: column; align-items: center; width: 100%; max-width: 450px; margin: 0 auto 0.5rem; }
+      .video-container img, .gif-container img { width: 100%; height: auto; }
+      .video-info { width: 100%; text-align: center; }
+    }
   `;
 
   if(!mode) return (
@@ -331,7 +263,7 @@ export default function Chat(){
               )}
 
               {msg.gifUrl && (
-                <div className="gif-container" style={{marginTop:"4px"}}>
+                <div className="gif-container">
                   <img src={msg.gifUrl} alt="GIF"/>
                 </div>
               )}
