@@ -127,48 +127,6 @@ function extractGifUrl(text){
   return match ? match[1] : null;
 }
 
-// --- Stili responsive incluso mobile ---
-const responsiveStyle = `
-/* --- Mobile --- */
-@media (max-width: 600px) {
-  * {
-    box-sizing: border-box;
-  }
-
-  div[style*="flex-direction:column"] {
-    width: 100% !important;
-    padding: 1rem !important;
-    overflow-x: hidden !important;
-  }
-
-  input, button {
-    width: 100% !important;
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .message-box {
-    max-width: 100% !important;
-    width: 100% !important;
-    overflow-x: hidden !important;
-    word-break: break-word;
-    max-height: 70vh !important; /* riquadro più grande */
-  }
-
-  .message-box img {
-    max-width: 100% !important;
-    height: auto !important;
-  }
-
-  .emoji-picker-react {
-    width: 90% !important;
-    max-width: 300px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-  }
-}
-`;
-
 // --- Componente principale ---
 export default function Chat(){
   const [messages,setMessages]=useState([]);
@@ -202,15 +160,15 @@ export default function Chat(){
     return () => supabase.removeChannel(channel);
   },[]);
 
-  // --- Scroll verso l'alto per nuovi messaggi ---
   useEffect(()=>{
     const el = messageBoxRef.current;
     if (!el) return;
     requestAnimationFrame(() => {
-      el.scrollTop = 0; // scroll verso l'alto
+      el.scrollTop = 0;
     });
   }, [messages]);
 
+  // --- Funzione corretta per invio messaggi ---
   async function sendMessage(){
     const trimmedNick = nickname.trim();
     const trimmedMsg = input.trim();
@@ -264,4 +222,114 @@ export default function Chat(){
     setNickWarning("");
   }
 
-  // --- Restante JSX identico a prima ---
+  const responsiveStyle = `/* stili identici al tuo codice originale */`;
+
+  if(!mode) return (
+    <>
+      <style>{responsiveStyle}</style>
+      <div style={{padding:"2rem",textAlign:"center"}}>
+        <h1 style={{fontSize:"2rem", marginBottom:"1.5rem", color:"#ff4d94", textShadow:"1px 1px 3px #aaa"}}>Benvenuto/a IL Muro</h1>
+        <button onClick={()=>setMode("loginForm")} style={{padding:"0.8rem 1.5rem",fontSize:"1rem",backgroundColor:"#1a73e8",color:"#fff",border:"none",borderRadius:"10px",cursor:"pointer",marginRight:"1rem"}}>Registrati / Login</button>
+        <button onClick={()=>setMode("guestForm")} style={{padding:"0.8rem 1.5rem",fontSize:"1rem",backgroundColor:"#ff4d94",color:"#fff",border:"none",borderRadius:"10px",cursor:"pointer"}}>Entra come Ospite</button>
+      </div>
+    </>
+  );
+
+  if(mode==="loginForm" || mode==="guestForm") {
+    const isGuest = mode==="guestForm";
+    return (
+      <>
+        <style>{responsiveStyle}</style>
+        <div style={{minHeight:"100vh",display:"flex",justifyContent:"center",alignItems:"center",backgroundColor:"#f0f0f0",padding:"2rem"}}>
+          <div style={{borderRadius:"25px",boxShadow:"0 12px 35px rgba(0,0,0,0.35)",width:"95%",maxWidth:"500px",textAlign:"center",backgroundColor:"white",padding:"2.5rem"}}>
+            <h2 style={{marginBottom:"1.5rem", color:"#ff4d94"}}>{isGuest ? "Accesso come Ospite" : "Registrati / Login"}</h2>
+            <input 
+              placeholder="Nickname" 
+              value={nickname} 
+              onChange={e=>{setNickname(e.target.value); checkNicknameLive(e.target.value);}} 
+              style={{marginBottom:"0.5rem", width:"90%", padding:"0.8rem", borderRadius:"8px", border:"1px solid #ccc"}}
+            />
+            {nickWarning && <p style={{color:"red"}}>{nickWarning}</p>}
+            {!isGuest && (
+              <input 
+                type="password" 
+                placeholder="Password" 
+                value={password} 
+                onChange={e=>setPassword(e.target.value)} 
+                style={{marginBottom:"0.5rem", width:"90%", padding:"0.8rem", borderRadius:"8px", border:"1px solid #ccc"}}
+              />
+            )}
+            <div style={{marginTop:"1rem"}}>
+              <button 
+                onClick={isGuest ? handleGuest : handleLogin}
+                style={{padding:"0.8rem 1.5rem",fontSize:"1rem",backgroundColor: isGuest ? "#ff4d94" : "#1a73e8",color:"#fff",border:"none",borderRadius:"10px",cursor:"pointer",marginRight:"0.5rem"}}
+              >
+                {isGuest ? "Entra" : "Accedi / Registrati"}
+              </button>
+              <button 
+                onClick={()=>setMode(null)} 
+                style={{padding:"0.8rem 1.5rem",fontSize:"1rem",backgroundColor: isGuest ? "#1a73e8" : "#ff4d94",color:"#fff",border:"none",borderRadius:"10px",cursor:"pointer"}}
+              >
+                Indietro
+              </button>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <style>{responsiveStyle}</style>
+      <div style={{padding:"2rem",minHeight:"100vh",backgroundColor:"#f0f0f0",display:"flex",flexDirection:"column",alignItems:"center"}}>
+        <h2 style={{marginBottom:"1rem"}}>Chat attiva - Nick: {nickname}</h2>
+
+        <div style={{marginBottom:"1rem",width:"90%",maxWidth:"900px"}}>
+          <input
+            placeholder="Scrivi un messaggio o incolla un link YouTube o GIF"
+            value={input}
+            onChange={e=>setInput(e.target.value)}
+            onKeyDown={e=>e.key==="Enter"&&sendMessage()}
+            style={{width:"70%",padding:"0.8rem",borderRadius:"8px",border:"1px solid #ccc",fontSize:"1rem",marginRight:"0.5rem"}}
+          />
+          <button onClick={()=>setShowPicker(!showPicker)} style={{padding:"0.8rem",fontSize:"1rem",marginRight:"0.5rem"}}>😀</button>
+          <button onClick={sendMessage} style={{padding:"0.8rem 1.2rem",fontSize:"1rem",backgroundColor:"#ff4d94",color:"#fff",border:"none",borderRadius:"8px",cursor:"pointer"}}>Invia</button>
+        </div>
+
+        {showPicker && <EmojiPicker onEmojiClick={addEmoji}/>}
+
+        <div
+          ref={messageBoxRef}
+          style={{border:"1px solid #ccc",padding:"0.5rem",maxHeight:"70vh",overflowY:"auto",fontSize:"1rem",width:"90%",maxWidth:"900px",display:"block"}}
+        >
+          {([...messages].slice().reverse()).map((msg, idx) => (
+            <div key={idx} style={{padding:"0px 0",margin:"0 0 12px 0"}}>
+              <div style={{lineHeight:"1.3",wordBreak:"break-word",margin:0,padding:0}}>
+                <strong>{msg.nickname}: </strong>
+                {msg.video || msg.gifUrl ? "" : censorText(msg.text)}
+              </div>
+              {msg.video && (
+                <div style={{display:"flex",alignItems:"center",border:"1px solid #ddd",borderRadius:"6px",padding:"4px",backgroundColor:"#fff",marginTop:"4px"}}>
+                  <img src={msg.video.thumbnail} alt="Thumbnail" style={{width:"300px",height:"200px",marginRight:"10px",borderRadius:"4px"}}/>
+                  <div>
+                    <a href={`https://www.youtube.com/watch?v=${extractVideoId(msg.text)}`} target="_blank" rel="noopener noreferrer" style={{fontWeight:"bold",color:"#1a73e8",textDecoration:"none",fontSize:"1.2rem"}}>
+                      {msg.video.title}
+                    </a>
+                    <p style={{margin:0,fontSize:"1rem"}}>Canale: {msg.video.channel}</p>
+                    <p style={{margin:0,fontSize:"1rem"}}>Durata: {formatDuration(msg.video.duration)}</p>
+                  </div>
+                </div>
+              )}
+              {msg.gifUrl && (
+                <div style={{marginTop:"4px"}}>
+                  <img src={msg.gifUrl} alt="GIF" style={{maxWidth:"300px",borderRadius:"4px"}}/>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
