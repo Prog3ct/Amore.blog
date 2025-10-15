@@ -164,11 +164,10 @@ export default function Chat(){
     const el = messageBoxRef.current;
     if (!el) return;
     requestAnimationFrame(() => {
-      el.scrollTop = 0;
+      el.scrollTop = el.scrollHeight;
     });
   }, [messages]);
 
-  // --- Funzione corretta per invio messaggi ---
   async function sendMessage(){
     const trimmedNick = nickname.trim();
     const trimmedMsg = input.trim();
@@ -222,7 +221,19 @@ export default function Chat(){
     setNickWarning("");
   }
 
-  const responsiveStyle = `/* stili identici al tuo codice originale */`;
+  const responsiveStyle = `
+    body, html { margin:0; padding:0; overflow-x:hidden; }
+    input, button { box-sizing:border-box; }
+    .chat-container { width:100%; max-width:900px; margin:0 auto; padding:1rem; box-sizing:border-box; }
+    .message-box { width:100%; overflow-y:auto; overflow-x:hidden; }
+
+    @media (max-width:600px){
+      input { width:100% !important; margin-bottom:0.5rem; }
+      button { width:48%; margin-bottom:0.5rem; }
+      .desktop-video { display:none; }
+      .mobile-video { display:block; }
+    }
+  `;
 
   if(!mode) return (
     <>
@@ -282,10 +293,10 @@ export default function Chat(){
   return (
     <>
       <style>{responsiveStyle}</style>
-      <div style={{padding:"2rem",minHeight:"100vh",backgroundColor:"#f0f0f0",display:"flex",flexDirection:"column",alignItems:"center"}}>
+      <div className="chat-container" style={{padding:"2rem",minHeight:"100vh",backgroundColor:"#f0f0f0",display:"flex",flexDirection:"column",alignItems:"center"}}>
         <h2 style={{marginBottom:"1rem"}}>Chat attiva - Nick: {nickname}</h2>
 
-        <div style={{marginBottom:"1rem",width:"90%",maxWidth:"900px"}}>
+        <div style={{marginBottom:"1rem",width:"100%"}}>
           <input
             placeholder="Scrivi un messaggio o incolla un link YouTube o GIF"
             value={input}
@@ -301,7 +312,8 @@ export default function Chat(){
 
         <div
           ref={messageBoxRef}
-          style={{border:"1px solid #ccc",padding:"0.5rem",maxHeight:"70vh",overflowY:"auto",fontSize:"1rem",width:"90%",maxWidth:"900px",display:"block"}}
+          className="message-box"
+          style={{border:"1px solid #ccc",padding:"0.5rem",maxHeight:"70vh",fontSize:"1rem",width:"100%",display:"block"}}
         >
           {([...messages].slice().reverse()).map((msg, idx) => (
             <div key={idx} style={{padding:"0px 0",margin:"0 0 12px 0"}}>
@@ -309,21 +321,42 @@ export default function Chat(){
                 <strong>{msg.nickname}: </strong>
                 {msg.video || msg.gifUrl ? "" : censorText(msg.text)}
               </div>
+
               {msg.video && (
-                <div style={{display:"flex",alignItems:"center",border:"1px solid #ddd",borderRadius:"6px",padding:"4px",backgroundColor:"#fff",marginTop:"4px"}}>
-                  <img src={msg.video.thumbnail} alt="Thumbnail" style={{width:"300px",height:"200px",marginRight:"10px",borderRadius:"4px"}}/>
-                  <div>
-                    <a href={`https://www.youtube.com/watch?v=${extractVideoId(msg.text)}`} target="_blank" rel="noopener noreferrer" style={{fontWeight:"bold",color:"#1a73e8",textDecoration:"none",fontSize:"1.2rem"}}>
-                      {msg.video.title}
-                    </a>
-                    <p style={{margin:0,fontSize:"1rem"}}>Canale: {msg.video.channel}</p>
-                    <p style={{margin:0,fontSize:"1rem"}}>Durata: {formatDuration(msg.video.duration)}</p>
+                <div>
+                  {/* Desktop thumbnail */}
+                  <div className="desktop-video" style={{display:"block", marginTop:"4px"}}>
+                    <div style={{display:"flex", alignItems:"center", border:"1px solid #ddd", borderRadius:"6px", padding:"4px", backgroundColor:"#fff"}}>
+                      <img src={msg.video.thumbnail} alt="Thumbnail" style={{width:"300px", height:"200px", marginRight:"10px", borderRadius:"4px"}}/>
+                      <div>
+                        <a href={`https://www.youtube.com/watch?v=${msg.video.videoId}`} target="_blank" rel="noopener noreferrer" style={{fontWeight:"bold",color:"#1a73e8",textDecoration:"none",fontSize:"1.2rem"}}>
+                          {msg.video.title}
+                        </a>
+                        <p style={{margin:0,fontSize:"1rem"}}>Canale: {msg.video.channel}</p>
+                        <p style={{margin:0,fontSize:"1rem"}}>Durata: {formatDuration(msg.video.duration)}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Mobile iframe responsive */}
+                  <div className="mobile-video" style={{display:"none", marginTop:"4px"}}>
+                    <div style={{position:"relative", paddingBottom:"56.25%", height:0, overflow:"hidden"}}>
+                      <iframe 
+                        src={`https://www.youtube.com/embed/${msg.video.videoId}`} 
+                        title={msg.video.title} 
+                        style={{position:"absolute", top:0, left:0, width:"100%", height:"100%", border:"0"}} 
+                        allowFullScreen
+                      ></iframe>
+                    </div>
+                    <p style={{margin: "0.5rem 0 0 0", fontSize:"1rem", fontWeight:"bold"}}>{msg.video.title}</p>
+                    <p style={{margin:0, fontSize:"0.9rem"}}>Canale: {msg.video.channel} | Durata: {formatDuration(msg.video.duration)}</p>
                   </div>
                 </div>
               )}
+
               {msg.gifUrl && (
                 <div style={{marginTop:"4px"}}>
-                  <img src={msg.gifUrl} alt="GIF" style={{maxWidth:"300px",borderRadius:"4px"}}/>
+                  <img src={msg.gifUrl} alt="GIF" style={{maxWidth:"100%", borderRadius:"4px"}}/>
                 </div>
               )}
             </div>
