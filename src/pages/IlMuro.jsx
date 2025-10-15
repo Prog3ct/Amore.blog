@@ -254,5 +254,18 @@ export default function Chat(){
     }
   `;
 
-  // ... il resto del componente JSX rimane invariato, aggiungendo le classi `chat-container`, `login-container`, `chat-input`, `message-box` e `youtube-container` dove serve
+  // --- Schermata iniziale, login e chat ---
+  if(!mode) return (
+    <>
+      <style>{responsiveStyle}</style>
+      <div className="chat-container" style={{padding:"2rem",textAlign:"center"}}>
+        <h1 style={{fontSize:"2rem", marginBottom:"1.5rem", color:"#ff4d94", textShadow:"1px 1px 3px #aaa"}}>Benvenuto/a IL Muro</h1>
+        <button onClick={()=>setMode("loginForm")} style={{padding:"0.8rem 1.5rem",fontSize:"1rem",backgroundColor:"#1a73e8",color:"#fff",border:"none",borderRadius:"10px",cursor:"pointer",marginRight:"1rem"}}>Registrati / Login</button>
+        <button onClick={()=>setMode("guestForm")} style={{padding:"0.8rem 1.5rem",fontSize:"1rem",backgroundColor:"#ff4d94",color:"#fff",border:"none",borderRadius:"10px",cursor:"pointer"}}>Entra come Ospite</button>
+      </div>
+    </>
+  );
+
+  // ... LoginForm / GuestForm e Chat con classi `login-container`, `chat-container`, `chat-input`, `message-box`, `youtube-container`
+  // Mantieni la struttura JSX del tuo codice originale, aggiungendo le classi dove serve per il mobile responsive
 }
