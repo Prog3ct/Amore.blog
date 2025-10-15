@@ -168,7 +168,6 @@ export default function Chat(){
     });
   }, [messages]);
 
-  // --- Funzione corretta per invio messaggi ---
   async function sendMessage(){
     const trimmedNick = nickname.trim();
     const trimmedMsg = input.trim();
@@ -222,7 +221,34 @@ export default function Chat(){
     setNickWarning("");
   }
 
-  const responsiveStyle = `/* stili identici al tuo codice originale */`;
+  const responsiveStyle = `
+    * { box-sizing: border-box; }
+
+    /* Solo per mobile */
+    @media (max-width: 600px) {
+      .chat-container, .login-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 1rem !important;
+      }
+
+      .chat-input {
+        width: 100% !important;
+        margin-bottom: 0.5rem !important;
+      }
+
+      .message-box {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0.5rem !important;
+      }
+
+      .message-box img {
+        max-width: 100% !important;
+        height: auto !important;
+      }
+    }
+  `;
 
   if(!mode) return (
     <>
@@ -240,13 +266,14 @@ export default function Chat(){
     return (
       <>
         <style>{responsiveStyle}</style>
-        <div style={{minHeight:"100vh",display:"flex",justifyContent:"center",alignItems:"center",backgroundColor:"#f0f0f0",padding:"2rem"}}>
+        <div className="login-container" style={{minHeight:"100vh",display:"flex",justifyContent:"center",alignItems:"center",backgroundColor:"#f0f0f0",padding:"2rem"}}>
           <div style={{borderRadius:"25px",boxShadow:"0 12px 35px rgba(0,0,0,0.35)",width:"95%",maxWidth:"500px",textAlign:"center",backgroundColor:"white",padding:"2.5rem"}}>
             <h2 style={{marginBottom:"1.5rem", color:"#ff4d94"}}>{isGuest ? "Accesso come Ospite" : "Registrati / Login"}</h2>
             <input 
               placeholder="Nickname" 
               value={nickname} 
               onChange={e=>{setNickname(e.target.value); checkNicknameLive(e.target.value);}} 
+              className="chat-input"
               style={{marginBottom:"0.5rem", width:"90%", padding:"0.8rem", borderRadius:"8px", border:"1px solid #ccc"}}
             />
             {nickWarning && <p style={{color:"red"}}>{nickWarning}</p>}
@@ -282,7 +309,7 @@ export default function Chat(){
   return (
     <>
       <style>{responsiveStyle}</style>
-      <div style={{padding:"2rem",minHeight:"100vh",backgroundColor:"#f0f0f0",display:"flex",flexDirection:"column",alignItems:"center"}}>
+      <div className="chat-container" style={{padding:"2rem",minHeight:"100vh",backgroundColor:"#f0f0f0",display:"flex",flexDirection:"column",alignItems:"center"}}>
         <h2 style={{marginBottom:"1rem"}}>Chat attiva - Nick: {nickname}</h2>
 
         <div style={{marginBottom:"1rem",width:"90%",maxWidth:"900px"}}>
@@ -291,6 +318,7 @@ export default function Chat(){
             value={input}
             onChange={e=>setInput(e.target.value)}
             onKeyDown={e=>e.key==="Enter"&&sendMessage()}
+            className="chat-input"
             style={{width:"70%",padding:"0.8rem",borderRadius:"8px",border:"1px solid #ccc",fontSize:"1rem",marginRight:"0.5rem"}}
           />
           <button onClick={()=>setShowPicker(!showPicker)} style={{padding:"0.8rem",fontSize:"1rem",marginRight:"0.5rem"}}>😀</button>
@@ -301,6 +329,7 @@ export default function Chat(){
 
         <div
           ref={messageBoxRef}
+          className="message-box"
           style={{border:"1px solid #ccc",padding:"0.5rem",maxHeight:"70vh",overflowY:"auto",fontSize:"1rem",width:"90%",maxWidth:"900px",display:"block"}}
         >
           {([...messages].slice().reverse()).map((msg, idx) => (
