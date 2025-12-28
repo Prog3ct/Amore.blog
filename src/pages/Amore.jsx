@@ -191,7 +191,7 @@ export default function Amore() {
 
           {/* Pulsante */}
           <a
-            href="https://webchat.orixon.org/"
+            href="https://www.simosnap.org/chat"
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -216,3 +216,4 @@ export default function Amore() {
     </div>
   );
 }
+
