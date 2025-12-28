@@ -160,7 +160,7 @@ export default function Amore() {
             in libertà e – perché no – trovare l’amore, sei nel posto giusto!
             <br />
             <br />
-            Chat Amore è il canale Orixon, creato per accogliere persone di ogni
+            Chat Amore è il canale Simosnap, creato per accogliere persone di ogni
             età e provenienza che desiderano incontrarsi, condividere momenti e
             costruire nuove amicizie o relazioni speciali.
             <br />
@@ -216,4 +216,5 @@ export default function Amore() {
     </div>
   );
 }
+
 
